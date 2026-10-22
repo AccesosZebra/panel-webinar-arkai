@@ -28,13 +28,13 @@ const GRUPOS = [
     // Desde cuándo suma la pauta de Meta (lo mismo que el since de "Pauta Meta" en n8n).
     pautaDesde: "1 oct",
     asesoresPorId: {
-      15955947: "Samantha Amor",
+      15955947: "Samantha Amor", // no recibe leads del webinar; se queda solo para nombrar sus leads
       15958871: "Alejandra Gonzalez",
       15958879: "Jose Ambrosio",
       15958895: "Normig Zoghbi",
       15958903: "Claudia Proclama",
       15958907: "Mariana Chiñas",
-      15981995: "Bernardo Elizondo",
+      15981995: "Bernardo Elizondo", // no recibe leads del webinar; se queda solo para nombrar sus leads
     },
     // Fechas en dd/mm/aaaa. Las metas van por nombre del asesor.
     // Fecha, objetivo y metas son provisionales: se ajustan desde el panel (Objetivos).
@@ -44,22 +44,18 @@ const GRUPOS = [
       fechaInicio: "22/10/2026",
       fechaWebinar: "27/10/2026",
       asesores: [
-        { id: "15955947", nombre: "Samantha Amor" },
         { id: "15958871", nombre: "Alejandra Gonzalez" },
         { id: "15958879", nombre: "Jose Ambrosio" },
         { id: "15958895", nombre: "Normig Zoghbi" },
         { id: "15958903", nombre: "Claudia Proclama" },
         { id: "15958907", nombre: "Mariana Chiñas" },
-        { id: "15981995", nombre: "Bernardo Elizondo" },
       ],
       metas: {
-        "Samantha Amor": 15,
-        "Alejandra Gonzalez": 15,
-        "Jose Ambrosio": 14,
-        "Normig Zoghbi": 14,
-        "Claudia Proclama": 14,
-        "Mariana Chiñas": 14,
-        "Bernardo Elizondo": 14,
+        "Alejandra Gonzalez": 20,
+        "Jose Ambrosio": 20,
+        "Normig Zoghbi": 20,
+        "Claudia Proclama": 20,
+        "Mariana Chiñas": 20,
       },
     },
     hojas: [
