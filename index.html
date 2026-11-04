@@ -9,7 +9,7 @@
 <style>:root{color-scheme:light dark}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <script>window.__PANEL_WEB__ = {
   "cfg": {
-    "version": "20261022T190952",
+    "version": "20261104T181537",
     "titulo": "Webinar ARKAI",
     "marca": "AK",
     "subtitulo": "27 oct 2026 · 6:30 PM",
@@ -86,7 +86,8 @@
     "etiquetaFormulario": "Leads del formulario WEBINAR",
     "claveLocal": "webinar-arkai-objetivos",
     "reporte": true,
-    "pautaDesde": "1 oct"
+    "pautaDesde": "1 oct",
+    "presupuesto": 40000
   },
   "publico": false,
   "soloPanel": false,
@@ -1623,8 +1624,12 @@ table.data tr.total td{background:var(--surface-3); font-weight:600; color:var(-
       ["Objetivo por asesor", m.asesores.length ? nf1.format(m.c.objetivo / m.asesores.length) : null],
       ["Webinar", (m.c.fechaWebinar ? dfCorta.format(m.c.fechaWebinar) : "—") + (CFG.hora ? " · " + CFG.hora : "")]
     ]));
+    var presu = CFG.presupuesto || null;
     kv.appendChild(repColumna([
+      ["Presupuesto", presu ? mxn.format(presu) : null],
       ["Inversión en pauta", inversion == null ? null : mxn.format(inversion)],
+      ["% del presupuesto usado", presu && inversion != null ? pctDe(inversion, presu) : null],
+      ["Presupuesto restante", presu && inversion != null ? mxn.format(presu - inversion) : null],
       ["Inversión en difusiones", null],
       ["Inversión en webinar", null],
       ["Costo por registro", inversion != null && total ? mxn.format(inversion / total) : null]
@@ -1693,6 +1698,7 @@ table.data tr.total td{background:var(--surface-3); font-weight:600; color:var(-
       s3.appendChild(repTabla(["Campaña", "Leads", "CPL", "Consumo"], filasP,
         ["Total", { v: nf.format(leadsMeta), n: true }, { v: leadsMeta ? mxn.format(inversion / leadsMeta) : null, n: true }, { v: mxn.format(inversion), n: true }]));
     }
+    if (CFG.presupuesto) s3.appendChild(el("div", "rep-note", "Presupuesto: " + mxn.format(CFG.presupuesto) + (inversion != null ? " · usado " + pctDe(inversion, CFG.presupuesto) + " · restan " + mxn.format(CFG.presupuesto - inversion) : "") + "."));
     s3.appendChild(el("div", "rep-note", "Meta Ads · campañas con “WEBINAR” en el nombre desde el " + (CFG.pautaDesde || "14 oct") + ". Se actualiza cada 15 minutos."));
     body.appendChild(s3);
 

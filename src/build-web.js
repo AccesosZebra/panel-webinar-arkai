@@ -64,6 +64,7 @@ function construir(grupo, overrides, version) {
     claveLocal: grupo.claveLocal || "",
     reporte: !!grupo.reporte,
     pautaDesde: grupo.pautaDesde || "",
+    presupuesto: grupo.presupuesto || null,
   };
 
   const web = {

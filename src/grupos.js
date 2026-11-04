@@ -27,6 +27,8 @@ const GRUPOS = [
     reporte: true,
     // Desde cuándo suma la pauta de Meta (lo mismo que el since de "Pauta Meta" en n8n).
     pautaDesde: "1 oct",
+    // Presupuesto de pauta del webinar, en MXN.
+    presupuesto: 40000,
     asesoresPorId: {
       15955947: "Samantha Amor", // no recibe leads del webinar; se queda solo para nombrar sus leads
       15958871: "Alejandra Gonzalez",
