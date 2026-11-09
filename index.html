@@ -9,7 +9,7 @@
 <style>:root{color-scheme:light dark}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <script>window.__PANEL_WEB__ = {
   "cfg": {
-    "version": "20261109T213139",
+    "version": "20261109T214815",
     "titulo": "Webinar ARKAI",
     "marca": "AK",
     "subtitulo": "27 oct 2026 · 6:30 PM",
@@ -1610,6 +1610,10 @@ table.data tr.total td{background:var(--surface-3); font-weight:600; color:var(-
     var unicos = idsDe("registros");
     Object.keys(idsDe("formulario")).forEach(function (k) { unicos[k] = true; });
     var total = Object.keys(unicos).length;
+    // Del total: los del formulario del webinar y los demás (campaña general u otras
+    // fuentes) que los asesores movieron a la etapa WEBINAR.
+    var totalForm = Object.keys(idsDe("formulario")).length;
+    var totalGeneral = total - totalForm;
 
     var dif = state.tabs[hojaConRol("difusiones")] || { header: [], rows: [] };
     var cResp = colIdx(dif, /^Respuesta$/i), cInt = colIdx(dif, /^Difusi[oó]n$/i), cWeb = colIdx(dif, /^En WEBINAR$/i);
@@ -1636,6 +1640,8 @@ table.data tr.total td{background:var(--surface-3); font-weight:600; color:var(-
     ]));
     kv.appendChild(repColumna([
       ["Registros totales", nf.format(total)],
+      ["· Del formulario webinar", nf.format(totalForm)],
+      ["· De campaña general (no webinar)", nf.format(totalGeneral)],
       ["Leads Meta (campaña webinar)", pauta.length ? nf.format(leadsMeta) : null],
       ["Asistentes", null],
       ["% de asistencia", null]
@@ -1657,6 +1663,8 @@ table.data tr.total td{background:var(--surface-3); font-weight:600; color:var(-
       ["Registros de asesores (WEBINAR)", nf.format(m.registros)],
       ["Leads del formulario", nf.format(m.formulario)],
       ["Registros totales", nf.format(total)],
+      ["· Del formulario webinar", nf.format(totalForm)],
+      ["· De campaña general (no webinar)", nf.format(totalGeneral)],
       ["% de cumplimiento", pctDe(total, m.c.objetivo)],
       ["% de registros de asesores", pctDe(m.registros, m.c.objetivo)],
       ["Días restantes", m.restantes != null ? nf.format(m.restantes) : null]
