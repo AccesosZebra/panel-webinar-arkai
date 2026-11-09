@@ -30,7 +30,7 @@ const GRUPOS = [
     // Presupuesto de pauta del webinar, en MXN.
     presupuesto: 40000,
     asesoresPorId: {
-      15955947: "Samantha Amor", // no recibe leads del webinar; se queda solo para nombrar sus leads
+      15955947: "Samantha Amor (Brokers)", // brokers: cuenta en el webinar aunque sus leads estén en Reingreso
       15958871: "Alejandra Gonzalez",
       15958879: "Jose Ambrosio",
       15958895: "Normig Zoghbi",
@@ -46,6 +46,7 @@ const GRUPOS = [
       fechaInicio: "22/10/2026",
       fechaWebinar: "27/10/2026",
       asesores: [
+        { id: "15955947", nombre: "Samantha Amor (Brokers)" }, // sin meta propia
         { id: "15958871", nombre: "Alejandra Gonzalez" },
         { id: "15958879", nombre: "Jose Ambrosio" },
         { id: "15958895", nombre: "Normig Zoghbi" },
