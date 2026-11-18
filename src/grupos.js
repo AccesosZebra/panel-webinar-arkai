@@ -69,6 +69,9 @@ const GRUPOS = [
       // Respuestas del formulario de Google del webinar (hoja "Arkai | Registro Webinar | Oct 2026").
       // Suman al total los que no estén ya contados por la etapa WEBINAR de Kommo.
       { nombre: "Registros externos", rol: "externos" },
+      // Formulario de brokers ("Brokers - Arkai Resorts"): brokers y clientes de brokers.
+      // No entran a Kommo; todos suman al total y van con Samantha Amor (Brokers).
+      { nombre: "Brokers", rol: "brokers" },
     ],
   },
 ];

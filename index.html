@@ -9,7 +9,7 @@
 <style>:root{color-scheme:light dark}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <script>window.__PANEL_WEB__ = {
   "cfg": {
-    "version": "20261118T200033",
+    "version": "20261118T200650",
     "titulo": "Webinar ARKAI",
     "marca": "AK",
     "subtitulo": "27 oct 2026 · 6:30 PM",
@@ -47,6 +47,10 @@
       {
         "nombre": "Registros externos",
         "rol": "externos"
+      },
+      {
+        "nombre": "Brokers",
+        "rol": "brokers"
       }
     ],
     "api": "https://n8n-n8n.9qd6cz.easypanel.host/webhook/arkai-webinar?k=18c39532228d6fac46d3c657",
@@ -1047,7 +1051,15 @@ table.data tr.total td{background:var(--surface-3); font-weight:600; color:var(-
       var key = norm(cAsExt >= 0 ? r[cAsExt] : "");
       porAsesor[key] = (porAsesor[key] || 0) + 1;
     });
-    var registros = registrosKommo + extExtra.length;
+    // Brokers y clientes de brokers (su propio formulario): no pasan por Kommo y suman todos.
+    var brkTab = state.tabs[hojaConRol("brokers")] || { header: [], rows: [] };
+    var brkRows = filasConDatos(brkTab);
+    var cAsBrk = colIdx(brkTab, /^Asesor$/i);
+    brkRows.forEach(function (r) {
+      var key = norm(cAsBrk >= 0 ? r[cAsBrk] : "");
+      porAsesor[key] = (porAsesor[key] || 0) + 1;
+    });
+    var registros = registrosKommo + extExtra.length + brkRows.length;
 
     // Un webinar puede repartir sus leads de campaña en varias pestañas.
     var leadsCamp = hojasConRol("campanas").reduce(function (n, nombre) {
@@ -1093,6 +1105,11 @@ table.data tr.total td{background:var(--surface-3); font-weight:600; color:var(-
       var f = cFechaE >= 0 ? esc(r[cFechaE]).slice(0, 10) : "";
       if (f === kHoy) { hoy++; extHoy++; } else if (f === kAyer) ayer++;
     });
+    var cFechaB = colIdx(brkTab, /^fecha/i), brkHoy = 0;
+    brkRows.forEach(function (r) {
+      var f = cFechaB >= 0 ? esc(r[cFechaB]).slice(0, 10) : "";
+      if (f === kHoy) { hoy++; brkHoy++; } else if (f === kAyer) ayer++;
+    });
 
     // Leads que llegaron por el formulario del webinar: se miden aparte y no suman al objetivo.
     var form = state.tabs[hojaConRol("formulario")] || { header: [], rows: [] };
@@ -1120,6 +1137,7 @@ table.data tr.total td{background:var(--surface-3); font-weight:600; color:var(-
     return {
       c: c, registros: registros, registrosKommo: registrosKommo, leadsCamp: leadsCamp, difusiones: difusiones,
       externos: extTab.rows.length, externosExtra: extExtra.length, extHoy: extHoy,
+      brokers: brkRows.length, brkHoy: brkHoy,
       avance: avance, faltan: faltan, pct: c.objetivo > 0 ? avance / c.objetivo : 0,
       diasTotales: diasTotales, transcurridos: transcurridos, restantes: restantes,
       esperado: esperado, ritmoReq: ritmoReq, ritmoActual: ritmoActual, proyeccion: proyeccion,
@@ -1255,7 +1273,8 @@ table.data tr.total td{background:var(--surface-3); font-weight:600; color:var(-
     var tiles = $("#tiles");
     tiles.textContent = "";
     var tdata = [
-      { v: m.registros, l: CFG.etiquetaRegistros || "Registros del formulario", n: hojaConRol("externos") ? nf.format(m.registrosKommo) + " de Kommo + " + nf.format(m.externosExtra) + " externos" : (CFG.api ? (CFG.fuenteNombre || "Postgres") : "Hoja " + (hojaConRol("registros") || "—")), rail: m.c.objetivo ? m.registros / m.c.objetivo : 0, color: "var(--c1)" },
+      { v: m.registros, l: CFG.etiquetaRegistros || "Registros del formulario", n: hojaConRol("externos") || hojaConRol("brokers") ? nf.format(m.registrosKommo) + " de Kommo + " + nf.format(m.externosExtra) + " externos + " + nf.format(m.brokers) + " brokers" : (CFG.api ? (CFG.fuenteNombre || "Postgres") : "Hoja " + (hojaConRol("registros") || "—")), rail: m.c.objetivo ? m.registros / m.c.objetivo : 0, color: "var(--c1)" },
+      { v: m.brokers, l: "Registros de brokers", n: nf.format(m.brkHoy) + " hoy · no entran a Kommo, suman todos", rail: 0, color: "var(--c2)", rol: "brokers" },
       { v: m.externos, l: "Registros externos", n: nf.format(m.externosExtra) + " suman al total · " + nf.format(m.externos - m.externosExtra) + " ya estaban en WEBINAR", rail: 0, color: "var(--c2)", rol: "externos" },
       { v: m.leadsCamp, l: "Leads de campañas", n: hojasConRol("campanas").join(" + ") || "Sin hoja de campañas", rail: m.c.objetivo ? m.leadsCamp / m.c.objetivo : 0, color: "var(--c2)", rol: "campanas" },
       CFG.api
@@ -1620,6 +1639,10 @@ table.data tr.total td{background:var(--surface-3); font-weight:600; color:var(-
   /* Filas de "Registros externos" que todavía no cuenta otra fuente: ninguno de
    * sus leads de Kommo (columna "ID del lead", separados por coma) está en `ya`.
    * Las que no tienen lead en Kommo cuentan siempre. */
+  function filasConDatos(t) {
+    return (t.rows || []).filter(function (r) { return esc(r[0]).trim() || esc(r[1]).trim(); });
+  }
+
   function externosSinContar(ya) {
     var t = state.tabs[hojaConRol("externos")] || { header: [], rows: [] };
     var c = colIdx(t, /^ID del lead$/i);
@@ -1652,11 +1675,13 @@ table.data tr.total td{background:var(--surface-3); font-weight:600; color:var(-
     Object.keys(idsDe("formulario")).forEach(function (k) { unicos[k] = true; });
     // Más los registros externos (formulario de Google) que ninguna de las dos fuentes cuenta.
     var totalExt = externosSinContar(unicos).length;
-    var total = Object.keys(unicos).length + totalExt;
+    // Y los de brokers, que no pasan por Kommo.
+    var totalBrk = m.brokers;
+    var total = Object.keys(unicos).length + totalExt + totalBrk;
     // Del total: los del formulario del webinar, los externos y los demás (campaña general
     // u otras fuentes) que los asesores movieron a la etapa WEBINAR.
     var totalForm = Object.keys(idsDe("formulario")).length;
-    var totalGeneral = total - totalForm - totalExt;
+    var totalGeneral = total - totalForm - totalExt - totalBrk;
 
     var dif = state.tabs[hojaConRol("difusiones")] || { header: [], rows: [] };
     var cResp = colIdx(dif, /^Respuesta$/i), cInt = colIdx(dif, /^Difusi[oó]n$/i), cWeb = colIdx(dif, /^En WEBINAR$/i);
@@ -1685,6 +1710,7 @@ table.data tr.total td{background:var(--surface-3); font-weight:600; color:var(-
       ["Registros totales", nf.format(total)],
       ["· Del formulario webinar", nf.format(totalForm)],
       ["· Registros externos (fuera de Kommo WEBINAR)", nf.format(totalExt)],
+      ["· Brokers y clientes de brokers", nf.format(totalBrk)],
       ["· De campaña general (no webinar)", nf.format(totalGeneral)],
       ["Leads Meta (campaña webinar)", pauta.length ? nf.format(leadsMeta) : null],
       ["Asistentes", null],
@@ -1704,11 +1730,12 @@ table.data tr.total td{background:var(--surface-3); font-weight:600; color:var(-
     var split = el("div", "rep-split");
     split.appendChild(repColumna([
       ["Objetivo", nf.format(m.c.objetivo)],
-      ["Registros WEBINAR + externos", nf.format(m.registros)],
+      ["Registros WEBINAR + externos + brokers", nf.format(m.registros)],
       ["Leads del formulario", nf.format(m.formulario)],
       ["Registros totales", nf.format(total)],
       ["· Del formulario webinar", nf.format(totalForm)],
       ["· Registros externos (fuera de Kommo WEBINAR)", nf.format(totalExt)],
+      ["· Brokers y clientes de brokers", nf.format(totalBrk)],
       ["· De campaña general (no webinar)", nf.format(totalGeneral)],
       ["% de cumplimiento", pctDe(total, m.c.objetivo)],
       ["% de registros de asesores", pctDe(m.registros, m.c.objetivo)],
@@ -2286,6 +2313,12 @@ table.data tr.total td{background:var(--surface-3); font-weight:600; color:var(-
     var he = hojaConRol("externos");
     if (he && json.externos) {
       grids[he] = [(json.externos.columnas || []).map(esc)].concat((json.externos.registros || []).map(function (r) {
+        return r.map(esc);
+      }));
+    }
+    var hb = hojaConRol("brokers");
+    if (hb && json.brokers) {
+      grids[hb] = [(json.brokers.columnas || []).map(esc)].concat((json.brokers.registros || []).map(function (r) {
         return r.map(esc);
       }));
     }

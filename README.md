@@ -16,6 +16,16 @@ formulario del webinar: los de `"Arkai"."02_entrada_leads_arkai"` con
 Estrategia = Webinar. Se miden por separado y no suman al objetivo de
 registros.
 
+**Registros externos** son las respuestas del formulario de Google del webinar
+(hoja "Arkai | Registro Webinar | Oct 2026 (Respuestas)"). n8n busca cada
+teléfono en Kommo; suman al total los que no estén ya contados por la etapa
+webinar (los "Alta manual" nacen directo en esa etapa y Kommo no registra un
+cambio de etapa, por eso no salían).
+
+**Brokers** son las respuestas del formulario "Brokers - Arkai Resorts"
+(brokers y clientes de brokers). No entran a Kommo; todas suman al total y van
+con Samantha Amor (Brokers).
+
 La vista **Reporte** sigue el machote del reporte de métricas de webinars:
 resumen general, análisis por asesor e inversión. La inversión sale de Meta
 Ads (cuenta Arkai Resorts, campañas con "WEBINAR" en el nombre desde el 1 oct;
