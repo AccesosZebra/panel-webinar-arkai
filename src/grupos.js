@@ -36,7 +36,7 @@ const GRUPOS = [
       15958895: "Normig Zoghbi",
       15958903: "Claudia Proclama",
       15958907: "Mariana Chiñas",
-      15981995: "Bernardo Elizondo", // no recibe leads del webinar; se queda solo para nombrar sus leads
+      15981995: "Bernardo Elizondo", // registros externos del formulario de Google; sin meta
     },
     // Fechas en dd/mm/aaaa. Las metas van por nombre del asesor.
     // Fecha, objetivo y metas son provisionales: se ajustan desde el panel (Objetivos).
@@ -52,6 +52,7 @@ const GRUPOS = [
         { id: "15958895", nombre: "Normig Zoghbi" },
         { id: "15958903", nombre: "Claudia Proclama" },
         { id: "15958907", nombre: "Mariana Chiñas" },
+        { id: "15981995", nombre: "Bernardo Elizondo" }, // sin meta propia (registros externos)
       ],
       metas: {
         "Alejandra Gonzalez": 20,
@@ -65,6 +66,9 @@ const GRUPOS = [
       { nombre: "General", rol: "general" },
       { nombre: "Registros", rol: "registros" },
       { nombre: "Formulario WEBINAR", rol: "formulario" },
+      // Respuestas del formulario de Google del webinar (hoja "Arkai | Registro Webinar | Oct 2026").
+      // Suman al total los que no estén ya contados por la etapa WEBINAR de Kommo.
+      { nombre: "Registros externos", rol: "externos" },
     ],
   },
 ];
